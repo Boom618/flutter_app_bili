@@ -1,16 +1,9 @@
 # flutter_bili_app
 
-A new Flutter project.
+## 设计一个网络库的思路：
+- 支持网络库，不干扰业务
+- 简单易用，支持配置来进行请求
+- Adapter 设计，可扩展
+- 统一异常和返回处理
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 底层 request 封装
