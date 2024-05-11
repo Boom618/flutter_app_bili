@@ -1,3 +1,5 @@
+import '../dao/login_dao.dart';
+
 enum HttpMethod { GET, POST, DELETE }
 
 /// 基础请求
@@ -29,6 +31,10 @@ abstract class BaseRequest {
     } else {
       uri = Uri.http(authority(), pathStr, params);
     }
+    if (needLogin()) {
+      //给需要登录的接口携带登录令牌
+      addHeader(LoginDao.BOARDING_PASS, LoginDao.getBoardingPass());
+    }
     print("uri = $uri");
     return uri.toString();
   }
@@ -42,7 +48,11 @@ abstract class BaseRequest {
     params[key] = value.toString();
     return this;
   }
-  Map<String,String> header = Map();
+  Map<String, dynamic> header = {
+    'course-flag': 'fa',
+    //访问令牌
+    "auth-token": "MjAyMC0wNi0yMyAwMzoyNTowMQ==fa",
+  };
   // 添加 heade
   BaseRequest addHeader(String key, Object value) {
     // todo params
