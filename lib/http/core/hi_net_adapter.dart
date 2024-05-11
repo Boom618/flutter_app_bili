@@ -3,14 +3,14 @@ import 'dart:convert';
 
 /// 网络请求抽象类
 abstract class HiNetAdapter {
-  Future<HiNetResponse<T>> send<T>(BaseRequest request);
+  Future<HiNetResponse> send<T>(BaseRequest request);
 }
 
 
 /// 统一返回数据处理
-class HiNetResponse<T> {
+class HiNetResponse {
 
-  T? data;
+  dynamic data;
   BaseRequest? request;
   int? statusCode;
   String? statusMessage;

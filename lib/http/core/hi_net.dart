@@ -2,6 +2,8 @@ import 'package:flutter_bili_app/http/core/hi_error.dart';
 import 'package:flutter_bili_app/http/core/hi_net_adapter.dart';
 import 'package:flutter_bili_app/http/request/base_request.dart';
 
+import 'dio_adapter.dart';
+
 /// 单例类
 class HiNet {
   HiNet._();
@@ -49,14 +51,16 @@ class HiNet {
   }
 
   Future<dynamic> send(BaseRequest request) async {
-    printLog('url:${request.url()}');
-    printLog('method:${request.httpMethod()}');
-    request.addHeader("token", "123");
-    printLog('header:${request.header}');
-    return Future.value({
-      "statusCode": 200,
-      "data": {"code": 0, "message": 'success '}
-    });
+    // printLog('url:${request.url()}');
+    // printLog('method:${request.httpMethod()}');
+    // request.addHeader("token", "123");
+    // printLog('header:${request.header}');
+    // return Future.value({
+    //   "statusCode": 200,
+    //   "data": {"code": 0, "message": 'success '}
+    // });
+    HiNetAdapter adapter = DioAdapter();
+    return adapter.send(request);
   }
 
   void printLog(log) {
