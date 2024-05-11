@@ -7,7 +7,7 @@ abstract class BaseRequest {
   var useHttps = true;
 
   // 域名
-  String authority() => "api. devio org";
+  String authority() => "api.devio.org";
 
   HttpMethod httpMethod();
 

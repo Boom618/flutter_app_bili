@@ -1,3 +1,5 @@
+import 'package:flutter_bili_app/http/core/hi_error.dart';
+import 'package:flutter_bili_app/http/core/hi_net_adapter.dart';
 import 'package:flutter_bili_app/http/request/base_request.dart';
 
 /// 单例类
@@ -12,10 +14,38 @@ class HiNet {
   }
 
   Future fire(BaseRequest request) async {
-    var response = await send(request);
-    var result = response['data'];
+    HiNetResponse? response;
+    var error;
+    try {
+      response = await send(request);
+    } on HiNetError catch (e) {
+      error = e;
+      response = e.data;
+      printLog(e.message);
+    } catch (e) {
+      // 其他异常
+      error = e;
+      printLog(e);
+    }
+    if (response == null) {
+      printLog(error);
+    }
+
+    var result = response?.data;
     printLog(result);
-    return result;
+
+    // 解析状态码
+    var status = response?.statusCode;
+    switch (status) {
+      case 200:
+        return result;
+      case 401:
+        return NeedLogin();
+      case 403:
+        return NeedAuth(result.toString(), data: result);
+      default:
+        return HiNetError(status ?? 400, result.toString(), data: result);
+    }
   }
 
   Future<dynamic> send(BaseRequest request) async {
