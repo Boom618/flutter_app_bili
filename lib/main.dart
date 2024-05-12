@@ -1,14 +1,12 @@
 import 'dart:convert';
-import 'dart:js_util';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bili_app/db/hi_cache.dart';
 import 'package:flutter_bili_app/http/dao/login_dao.dart';
 import 'package:flutter_bili_app/http/request/notice_request.dart';
+import 'package:flutter_bili_app/page/registration_page.dart';
 
 import 'http/core/hi_error.dart';
 import 'http/core/hi_net.dart';
-import 'http/request/test_request.dart';
 
 void main() {
   runApp(const MyApp());
@@ -99,27 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: RegistrationPage(),
     );
   }
 }
