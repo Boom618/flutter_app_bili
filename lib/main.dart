@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'dart:js_util';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bili_app/db/hi_cache.dart';
 import 'package:flutter_bili_app/http/dao/login_dao.dart';
+import 'package:flutter_bili_app/http/request/notice_request.dart';
 
+import 'http/core/hi_error.dart';
 import 'http/core/hi_net.dart';
 import 'http/request/test_request.dart';
 
@@ -48,9 +51,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // print(result);
     setState(() {
       _counter++;
+      testNotice();
     });
     // test();
-    testLogin();
+    // testLogin();
   }
 
   void test() {
@@ -69,12 +73,22 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       // var result =
       //     await LoginDao.registration('userName', '123456', '12455', '1234');
-      var result1 =
-      await LoginDao.login('userName', '123456');
+      var result1 = await LoginDao.login('userName', '123456');
       // print(result);
       print(result1);
     } catch (e) {
       print(e);
+    }
+  }
+
+  void testNotice() async {
+    try {
+      var notice = await HiNet.getInstance().fire(NoticeRequest());
+      print(notice);
+    } on NeedLogin catch (e) {
+      print(e);
+    } catch (e) {
+      print(e.toString());
     }
   }
 

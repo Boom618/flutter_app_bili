@@ -32,7 +32,7 @@ class LoginDao {
     var result = await HiNet.getInstance().fire(request);
     print(result);
     if (result['code'] == 0 && result['data'] != null) {
-      // HiCache.preInit();
+      // 保存登录令牌
       HiCache.getInstance().setString(BOARDING_PASS, result['data']);
     }
     return result;

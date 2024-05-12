@@ -23,7 +23,7 @@ class HiNet {
     } on HiNetError catch (e) {
       error = e;
       response = e.data;
-      printLog(e.message);
+      printLog(e);
     } catch (e) {
       // 其他异常
       error = e;
