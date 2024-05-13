@@ -22,7 +22,9 @@ class _MaterialColorState extends State<LoginEffect> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,// 两边对齐，其余中间平分
         children: [
-          _image(true)
+          _image(true),
+          const Image(height: 90, width: 90, image: AssetImage('images/logo.png')),
+          _image(false),
         ],
       ),
     );

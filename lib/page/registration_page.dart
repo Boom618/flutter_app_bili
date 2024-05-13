@@ -2,36 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bili_app/http/core/hi_error.dart';
 import 'package:flutter_bili_app/http/dao/login_dao.dart';
 
+import '../util/string_util.dart';
+import '../util/toast.dart';
 import '../weight/appbar.dart';
+import '../weight/login_button.dart';
 import '../weight/login_effect.dart';
 import '../weight/login_input.dart';
 
 ///注册页面
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key});
+  final VoidCallback? onJumpToLogin;
 
-  // final VoidCallback onJumpToLogin;
-
-  // const RegistrationPage({Key key, this.onJumpToLogin}) : super(key: key);
+  const RegistrationPage({super.key, this.onJumpToLogin});
 
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  bool protect = false;
+  bool protect = false; // 密文还是明文
   bool loginEnable = false;
-  String? userName;
-  String? password;
-  String? rePassword;
-  String? imoocId;
-  String? orderId;
+  late String userName;
+  late String password;
+  late String rePassword;
+  late String imoocId;
+  late String orderId;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar("注册", "登录", () {
-        print('object');
+      appBar: appBar("注册", "登录", widget.onJumpToLogin ?? (){
+
       }),
       body: Container(
         child: ListView(
@@ -95,68 +96,69 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 checkInput();
               },
             ),
-            // Padding(
-            //   padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-            //   child: LoginButton('注册',
-            //       enable: loginEnable, onPressed: checkParams),
-            // )
+            Padding(
+              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+              child: LoginButton('注册',
+                  enable: loginEnable, onPressed: checkParams),
+            )
           ],
         ),
       ),
     );
   }
 
+  /// 检查输入参数
   void checkInput() {
-    // bool enable;
-    // if (isNotEmpty(userName) &&
-    //     isNotEmpty(password) &&
-    //     isNotEmpty(rePassword) &&
-    //     isNotEmpty(imoocId) &&
-    //     isNotEmpty(orderId)) {
-    //   enable = true;
-    // } else {
-    //   enable = false;
-    // }
-    // setState(() {
-    //   loginEnable = enable;
-    // });
+    bool enable;
+    if (isNotEmpty(userName) &&
+        isNotEmpty(password) &&
+        isNotEmpty(rePassword) &&
+        isNotEmpty(imoocId) &&
+        isNotEmpty(orderId)) {
+      enable = true;
+    } else {
+      enable = false;
+    }
+    setState(() {
+      loginEnable = enable;
+    });
   }
 
   void send() async {
-    // try {
-    //   var result =
-    //       await LoginDao.registration(userName, password, imoocId, orderId);
-    //   print(result);
-    //   if (result['code'] == 0) {
-    //     print('注册成功');
-    //     showToast('注册成功');
-    //     if (widget.onJumpToLogin != null) {
-    //       widget.onJumpToLogin();
-    //     }
-    //   } else {
-    //     print(result['msg']);
-    //     showWarnToast(result['msg']);
-    //   }
-    // } on NeedAuth catch (e) {
-    //   print(e);
-    //   showWarnToast(e.message);
-    // } on HiNetError catch (e) {
-    //   print(e);
-    //   showWarnToast(e.message);
-    // }
+    try {
+      var result =
+          await LoginDao.registration(userName, password, imoocId, orderId);
+      print(result);
+      if (result['code'] == 0) {
+        print('注册成功');
+        showToast('注册成功');
+        if (widget.onJumpToLogin != null) {
+          widget.onJumpToLogin!();
+        }
+      } else {
+        print(result['msg']);
+        showWarnToast(result['msg']);
+      }
+    } on NeedAuth catch (e) {
+      print(e);
+      showWarnToast(e.message);
+    } on HiNetError catch (e) {
+      print(e);
+      showWarnToast(e.message);
+    }
   }
 
   void checkParams() {
-    //   String tips;
-    //   if (password != rePassword) {
-    //     tips = '两次密码不一致';
-    //   } else if (orderId.length != 4) {
-    //     tips = "请输入订单号的后四位";
-    //   }
-    //   if (tips != null) {
-    //     print(tips);
-    //     return;
-    //   }
-    //   send();
+      String? tips;
+      if (password != rePassword) {
+        tips = '两次密码不一致';
+      } else if (orderId?.length != 4) {
+        tips = "请输入订单号的后四位";
+      }
+      if (tips != null) {
+        print(tips);
+        return;
+      }
+      send();
   }
 }

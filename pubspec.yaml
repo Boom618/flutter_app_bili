@@ -39,6 +39,7 @@ dependencies:
   json_annotation: ^4.0.0 # json 转 model
   shared_preferences: ^2.2.3 # 缓存库
   flutter_hi_cache: ^0.0.1 # 基于 shared_preferences 缓存
+  fluttertoast: ^8.2.5 # toast
 
 dev_dependencies:
   flutter_test:
