@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bili_app/http/core/hi_error.dart';
 import 'package:flutter_bili_app/http/dao/login_dao.dart';
 
+import '../weight/appbar.dart';
+import '../weight/login_effect.dart';
 import '../weight/login_input.dart';
 
 ///注册页面
@@ -28,14 +30,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: appBar("注册", "登录", widget.onJumpToLogin),
+      appBar: appBar("注册", "登录", () {
+        print('object');
+      }),
       body: Container(
         child: ListView(
           //自适应键盘弹起，防止遮挡
           children: [
-            // LoginEffect(
-            //   protect: protect,
-            // ),
+            LoginEffect(protect: protect),
             LoginInput(
               "用户名",
               "请输入用户名",
@@ -54,7 +56,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 checkInput();
               },
               focusChange: (focus) {
-                this.setState(() {
+                setState(() {
                   protect = focus;
                 });
               },
@@ -69,7 +71,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 checkInput();
               },
               focusChange: (focus) {
-                this.setState(() {
+                setState(() {
                   protect = focus;
                 });
               },
@@ -156,5 +158,5 @@ class _RegistrationPageState extends State<RegistrationPage> {
     //     return;
     //   }
     //   send();
-    }
   }
+}
