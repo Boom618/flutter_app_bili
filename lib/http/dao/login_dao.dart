@@ -21,14 +21,17 @@ class LoginDao {
     BaseRequest request;
     if (imoocId != null && orderId != null) {
       request = RegistrationRequest();
+      request
+          .add("userName", userName)
+          .add("password", password)
+          .add("imoocId", imoocId)
+          .add("orderId", orderId);
     } else {
       request = LoginRequest();
+      request
+          .add("userName", userName)
+          .add("password", password);
     }
-    request
-        .add("userName", userName)
-        .add("password", password)
-        .add("imoocId", imoocId)
-        .add("orderId", orderId);
     var result = await HiNet.getInstance().fire(request);
     print(result);
     if (result['code'] == 0 && result['data'] != null) {
