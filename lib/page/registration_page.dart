@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bili_app/http/core/hi_error.dart';
 import 'package:flutter_bili_app/http/dao/login_dao.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
+import '../routes/app_pages.dart';
 import '../util/string_util.dart';
 import '../util/toast.dart';
 import '../weight/appbar.dart';
 import '../weight/login_button.dart';
 import '../weight/login_effect.dart';
 import '../weight/login_input.dart';
+import 'login_page.dart';
 
 ///注册页面
 class RegistrationPage extends StatefulWidget {
@@ -32,7 +36,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar("注册", "登录", widget.onJumpToLogin ?? (){
-
+        Get.offAllNamed(Routes.LOGING);
       }),
       body: Container(
         child: ListView(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bili_app/http/core/hi_error.dart';
 import 'package:flutter_bili_app/http/dao/login_dao.dart';
+import 'package:flutter_bili_app/page/registration_page.dart';
+import 'package:get/route_manager.dart';
 
 import '../util/string_util.dart';
 import '../util/toast.dart';
@@ -26,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar('密码登录', '注册', () {}),
+      appBar: appBar('密码登录', '注册', () {Get.to(RegistrationPage()); }),
       body: Container(
         child: ListView(
           children: [

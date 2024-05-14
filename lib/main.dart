@@ -3,105 +3,117 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bili_app/http/dao/login_dao.dart';
 import 'package:flutter_bili_app/http/request/notice_request.dart';
+import 'package:flutter_bili_app/mode/video_model.dart';
 import 'package:flutter_bili_app/page/login_page.dart';
 import 'package:flutter_bili_app/page/registration_page.dart';
+import 'package:flutter_bili_app/page/video_detail_page.dart';
 import 'package:flutter_hi_cache/flutter_hi_cache.dart';
 
 import 'http/core/hi_error.dart';
 import 'http/core/hi_net.dart';
+import 'page/home_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const BiliApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BiliApp extends StatefulWidget {
+  const BiliApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<BiliApp> createState() => _BiliAppState();
+}
+
+class _BiliAppState extends State<BiliApp> {
+  final BiliRouteDelegate _routeDelegate = BiliRouteDelegate();
+  final BiliRouteInformationParser _biliRouteInformationParser = BiliRouteInformationParser();
+
   @override
   Widget build(BuildContext context) {
-    HiCache.preInit();
+    // 定义路由
+    var widget = Router(
+      routerDelegate: _routeDelegate,
+      routeInformationParser: _biliRouteInformationParser,
+      routeInformationProvider: PlatformRouteInformationProvider(
+          initialRouteInformation: RouteInformation(location: '/')),
+    );
+
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      // home: RegistrationPage(),
-      home: LoginPage(),
+      home: widget,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
 
-  final String title;
+class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<BiliRoutePath> {
+  final GlobalKey<NavigatorState> navigatorKey;
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+  BiliRouteDelegate() :navigatorKey = GlobalKey<NavigatorState>();
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  List<MaterialPage> pages = [];
 
-  void _incrementCounter() async {
-    // 借助 HiNet 发起网络请求
-    // TestRequest request = TestRequest();
-    // request.add("aa", "ddd").add("bb", "333").add('requestPrams', 'kkk');
-    // var result = await HiNet.getInstance().fire(request);
-    // print(result);
-    setState(() {
-      _counter++;
-      testNotice();
-    });
-    // test();
-    // testLogin();
-  }
+  VideoModel? videoModel;
 
-  void test() {
-    const jsonString =
-        "{ \"name\": \"flutter\", \"url\": \"https://coding.imooc.com/class/487.html\" }";
-    //json 转map
-    Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-    print('name:${jsonMap['name']}');
-    print('url:${jsonMap['url']}');
-    //map 转json
-    String json = jsonEncode(jsonMap);
-    print('json:$json');
-  }
-
-  void testLogin() async {
-    try {
-      // var result =
-      //     await LoginDao.registration('userName', '123456', '12455', '1234');
-      var result1 = await LoginDao.login('userName', '123456');
-      // print(result);
-      print(result1);
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void testNotice() async {
-    try {
-      var notice = await HiNet.getInstance().fire(NoticeRequest());
-      print(notice);
-    } on NeedLogin catch (e) {
-      print(e);
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  BiliRoutePath? page;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      // body: RegistrationPage(),
-    );
+    pages = [
+      pageWarp(HomePage(
+        onJumpToDetail: (videoModel) {
+          this.videoModel = videoModel;
+          notifyListeners();
+        },
+      )),
+      if(videoModel != null) pageWarp(VideoDetailPage(videoModel!))
+    ];
+    // 返回路由堆栈信息
+    return Navigator(
+        key: navigatorKey,
+        pages: pages;
+        onPopPage: (route, result)
+    {
+      // 这里控制是否可以返回
+      if (!route.didPop(result)) {
+        return false;
+      }
+      return true;
+    });
   }
+
+  @override
+  Future<void> setNewRoutePath(BiliRoutePath page) async {
+    this.page = page;
+  }
+
+}
+
+///可缺省，主要应用与web，持有RouteInformationprovider 提供的 RouteInformation
+class BiliRouteInformationParser extends RouteInformationParser<BiliRoutePath> {
+  @override
+  Future<BiliRoutePath> parseRouteInformation(
+      RouteInformation routeInformation) async {
+    // 初始化
+    final uri = Uri.parse(routeInformation.location!);
+    // 返回路由
+    if (uri.pathSegments.isEmpty) {
+      return BiliRoutePath.home();
+    }
+    return BiliRoutePath.detail();
+  }
+}
+
+///定义路由数据，path
+class BiliRoutePath {
+  final String location;
+
+  BiliRoutePath.home() : location = "/";
+
+  BiliRoutePath.detail() : location = "/detail";
+}
+
+/// 创建 page
+pageWarp(Widget child) {
+  return MaterialPage(key: ValueKey(child.hashCode), child: child);
 }
